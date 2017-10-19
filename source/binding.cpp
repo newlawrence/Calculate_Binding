@@ -6,15 +6,15 @@
 
 namespace {
 
-using Parser = calculate::RealParser;
-using Expression = calculate::RealParser::Expression;
-using Nodes = std::vector<calculate::RealParser::Expression>;
-using Lexer = calculate::RealParser::Lexer;
-using Symbol = calculate::RealParser::Symbol;
-using Associativity = calculate::RealParser::Associativity;
-using Constant = calculate::RealParser::Constant;
-using Function = calculate::RealParser::Function;
-using Operator = calculate::RealParser::Operator;
+using Parser = calculate::Parser;
+using Expression = calculate::Parser::Expression;
+using Nodes = std::vector<calculate::Parser::Expression>;
+using Lexer = calculate::Parser::Lexer;
+using Symbol = calculate::Parser::Symbol;
+using Associativity = calculate::Parser::Associativity;
+using Constant = calculate::Parser::Constant;
+using Function = calculate::Parser::Function;
+using Operator = calculate::Parser::Operator;
 
 using cParser = calculate_Parser;
 using cExpression = calculate_Expression;
@@ -167,7 +167,7 @@ const char* calculate_tokenizer_regex = Lexer::tokenizer_regex.pattern.c_str();
 cParser _calculate_get_parser() { return Factory<Parser, cParser>::get(); }
 
 cParser _calculate_get_default_parser() {
-    return Factory<Parser, cParser, calculate::DefaultRealParser>::get();
+    return Factory<Parser, cParser, calculate::DefaultParser>::get();
 }
 
 
@@ -680,7 +680,7 @@ double _calculate_evaluate_function(
     double y,
     double z
 ) {
-    auto parser = calculate::DefaultRealParser();
+    auto parser = calculate::DefaultParser();
     switch(arguments) {
     case 1:
         return evaluate(
