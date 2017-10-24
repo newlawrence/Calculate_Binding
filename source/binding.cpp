@@ -666,7 +666,7 @@ double _calculate_evaluate_expression(
         );
     }
     return evaluate(
-        [expression]() { return double{*reinterpret_cast<Expression*>(expression)}; },
+        [expression]() { return reinterpret_cast<Expression*>(expression)->operator()(); },
         error
     );
 }
