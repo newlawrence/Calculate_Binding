@@ -40,23 +40,26 @@ struct Error {
 
 
 template<typename Type>
-std::unordered_map<Type*, std::unique_ptr<Type>>& cache() {
+std::unordered_map<Type*, std::unique_ptr<Type>>& cache() noexcept {
     static std::unordered_map<Type*, std::unique_ptr<Type>> cache;
     return cache;
 }
 
 template<typename Cache, typename Wrapper>
-bool find(Wrapper resource) {
+bool find(Wrapper resource) noexcept {
     return cache<Cache>().find(reinterpret_cast<Cache*>(resource)) != cache<Cache>().end();
 }
 
 template<typename Cache, typename Wrapper>
-void free(Wrapper resource) { cache<Cache>().erase(reinterpret_cast<Cache*>(resource)); }
+void free(Wrapper resource) {
+    if (find<Cache, Wrapper>(resource))
+        cache<Cache>().erase(reinterpret_cast<Cache*>(resource));
+}
 
 template<typename Cache, typename Wrapper, typename Type = Cache>
 struct Factory {
     template<typename... Args>
-    static Wrapper get(Args&&... args) {
+    static Wrapper get(Args&&... args) noexcept {
         auto object = std::make_unique<Type>(std::forward<Args>(args)...);
         auto pointer = object.get();
         cache<Cache>()[pointer] = std::move(object);
@@ -64,7 +67,7 @@ struct Factory {
     }
 
     template<typename Operation>
-    static Wrapper create(Operation operation, cError error) {
+    static Wrapper create(Operation operation, cError error) noexcept {
         try {
             auto object = std::make_unique<Cache>(operation());
             auto pointer = object.get();
@@ -81,14 +84,14 @@ struct Factory {
     }
 };
 
-std::string to_string(const std::vector<std::string>& list) {
+std::string to_string(const std::vector<std::string>& list) noexcept {
     std::ostringstream stream;
     for(size_t i = 0; i < list.size(); i++)
         stream << (i ? "," : "") << list[i];
     return stream.str();
 }
 
-std::vector<std::string> from_string(const std::string& string) {
+std::vector<std::string> from_string(const std::string& string) noexcept {
     std::istringstream stream{calculate::detail::replace(string, ",", " ")};
     return std::vector<std::string>{
         std::istream_iterator<std::string>{stream},
@@ -96,7 +99,7 @@ std::vector<std::string> from_string(const std::string& string) {
     };
 }
 
-void write(char* where, const std::string& what, size_t length) {
+void write(char* where, const std::string& what, size_t length) noexcept {
     if (what.size() < length) {
         std::strncpy(where, what.c_str(), what.size());
         where[what.size()] = '\0';
@@ -108,7 +111,7 @@ void write(char* where, const std::string& what, size_t length) {
 }
 
 template<typename Operation>
-void write(Operation operation, char* tokens, size_t length, cError error) {
+void write(Operation operation, char* tokens, size_t length, cError error) noexcept {
     try {
         auto list = operation();
         if (error != nullptr)
@@ -124,7 +127,7 @@ void write(Operation operation, char* tokens, size_t length, cError error) {
 }
 
 template<typename Operation>
-double evaluate(Operation operation, cError error) {
+double evaluate(Operation operation, cError error)  noexcept {
     try {
         auto value = operation();
         if (error != nullptr)
@@ -139,7 +142,7 @@ double evaluate(Operation operation, cError error) {
 }
 
 template<typename Operation>
-void just_do(Operation operation, cError error) {
+void just_do(Operation operation, cError error) noexcept {
     try {
         operation();
         if (error != nullptr)
