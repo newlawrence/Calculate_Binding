@@ -378,6 +378,8 @@ void _calculate_free_error(calculate_Error);
 
 #ifdef __cplusplus
 }
+
+#include "calculate/interface.hpp"
 #endif
 
 #endif
