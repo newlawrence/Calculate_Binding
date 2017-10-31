@@ -6,8 +6,6 @@
 #include "calculate.hpp"
 
 
-namespace {
-
 using Parser = calculate::Parser;
 using Expression = calculate::Parser::Expression;
 using Nodes = std::vector<calculate::Parser::Expression>;
@@ -151,8 +149,6 @@ void just_do(Operation operation, cError error) {
         if (error != nullptr)
             reinterpret_cast<Error*>(error)->notify(true, exception.what());
     }
-}
-
 }
 
 #endif
