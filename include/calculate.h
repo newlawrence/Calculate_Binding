@@ -34,6 +34,7 @@ enum calculate_SymbolType {
 enum calculate_AssociativityType {calculate_LEFT=0, calculate_RIGHT, calculate_BOTH};
 
 #ifdef __cplusplus
+#include <cstdlib>
 using calculate_Parser = calculate_ParserHandler*;
 using calculate_Expression = calculate_ExpressionHandler*;
 using calculate_Nodes = calculate_NodesHandler*;
