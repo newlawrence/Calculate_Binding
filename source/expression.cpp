@@ -1,13 +1,17 @@
 #include "calculate.h"
 
 
-cNodes _calculate_get_nodes() { return Factory<Nodes, cNodes>::get(Nodes{}); }
+cNodes _calculate_get_nodes() {
+    return Factory<Nodes, cNodes>::get(Nodes{});
+}
 
 cNodes _calculate_promote(cExpression expression) {
     return Factory<Nodes, cNodes>::get(Nodes{*reinterpret_cast<Expression*>(expression)});
 }
 
-size_t _calculate_size(cNodes nodes) { return reinterpret_cast<Nodes*>(nodes)->size(); }
+size_t _calculate_size(cNodes nodes) {
+    return reinterpret_cast<Nodes*>(nodes)->size();
+}
 
 cExpression _calculate_get_node(cError error, cNodes nodes, size_t n) {
     return Factory<Expression, cExpression>::create(
@@ -109,7 +113,9 @@ double _calculate_evaluate_expression(
         );
     }
     return evaluate(
-        [expression]() { return reinterpret_cast<Expression*>(expression)->operator()(); },
+        [expression]() {
+            return reinterpret_cast<Expression*>(expression)->operator()();
+        },
         error
     );
 }

@@ -1,7 +1,9 @@
 #include "calculate.h"
 
 
-cParser _calculate_get_parser() { return Factory<Parser, cParser>::get(); }
+cParser _calculate_get_parser() {
+    return Factory<Parser, cParser>::get();
+}
 
 cParser _calculate_get_default_parser() {
     return Factory<Parser, cParser, calculate::DefaultParser>::get();

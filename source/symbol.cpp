@@ -194,21 +194,27 @@ void _calculate_set_operator_callback(
 
 void _calculate_remove_constant(cError error, cParser parser, const char* token) {
     just_do(
-        [parser, token]() { reinterpret_cast<Parser*>(parser)->remove<Constant>(token); },
+        [parser, token]() {
+            reinterpret_cast<Parser*>(parser)->remove<Constant>(token);
+        },
         error
     );
 }
 
 void _calculate_remove_function(cError error, cParser parser, const char* token) {
     just_do(
-        [parser, token]() { reinterpret_cast<Parser*>(parser)->remove<Function>(token); },
+        [parser, token]() {
+            reinterpret_cast<Parser*>(parser)->remove<Function>(token);
+        },
         error
     );
 }
 
 void _calculate_remove_operator(cError error, cParser parser, const char* token) {
     just_do(
-        [parser, token]() { reinterpret_cast<Parser*>(parser)->remove<Operator>(token); },
+        [parser, token]() {
+            reinterpret_cast<Parser*>(parser)->remove<Operator>(token);
+        },
         error
     );
 }
@@ -216,7 +222,9 @@ void _calculate_remove_operator(cError error, cParser parser, const char* token)
 
 void _calculate_list_constants(cParser parser, char* tokens, size_t length) {
     write(
-        [parser]() { return to_string(reinterpret_cast<Parser*>(parser)->list<Constant>()); },
+        [parser]() {
+            return to_string(reinterpret_cast<Parser*>(parser)->list<Constant>());
+        },
         tokens,
         length,
         nullptr
@@ -225,7 +233,9 @@ void _calculate_list_constants(cParser parser, char* tokens, size_t length) {
 
 void _calculate_list_functions(cParser parser, char* tokens, size_t length) {
     write(
-        [parser]() { return to_string(reinterpret_cast<Parser*>(parser)->list<Function>()); },
+        [parser]() {
+            return to_string(reinterpret_cast<Parser*>(parser)->list<Function>());
+        },
         tokens,
         length,
         nullptr
@@ -234,7 +244,9 @@ void _calculate_list_functions(cParser parser, char* tokens, size_t length) {
 
 void _calculate_list_operators(cParser parser, char* tokens, size_t length) {
     write(
-        [parser]() { return to_string(reinterpret_cast<Parser*>(parser)->list<Operator>()); },
+        [parser]() {
+            return to_string(reinterpret_cast<Parser*>(parser)->list<Operator>());
+        },
         tokens,
         length,
         nullptr
@@ -284,7 +296,9 @@ double _calculate_evaluate_function(
         );
     }
     return evaluate(
-        [function]() { return reinterpret_cast<Function*>(function)->operator()(); },
+        [function]() {
+            return reinterpret_cast<Function*>(function)->operator()();
+        },
         error
     );
 }
