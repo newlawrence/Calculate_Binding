@@ -1,5 +1,5 @@
-#ifndef __CALCULATE_INTERFACE_HPP__
-#define __CALCULATE_INTERFACE_HPP__
+#ifndef __CALCULATE_BINDING_HPP__
+#define __CALCULATE_BINDING_HPP__
 
 #include <cstring>
 

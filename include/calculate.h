@@ -380,7 +380,7 @@ void _calculate_free_error(calculate_Error);
 #ifdef __cplusplus
 }
 
-#include "calculate/interface.hpp"
+#include "calculate/binding.hpp"
 #endif
 
 #endif
