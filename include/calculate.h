@@ -1,6 +1,9 @@
 #ifndef __CALCULATE_H__
 #define __CALCULATE_H__
 
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4503)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
