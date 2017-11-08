@@ -60,14 +60,14 @@ typedef enum calculate_SymbolType calculate_Symbol;
 typedef enum calculate_AssociativityType calculate_Associativity;
 #endif
 
-extern const char* const calculate_left_token;
-extern const char* const calculate_right_token;
-extern const char* const calculate_decimal_token;
-extern const char* const calculate_separator_token;
-extern const char* const calculate_number_regex;
-extern const char* const calculate_name_regex;
-extern const char* const calculate_symbol_regex;
-extern const char* const calculate_tokenizer_regex;
+const char* calculate_left_token(void);
+const char* calculate_right_token(void);
+const char* calculate_decimal_token(void);
+const char* calculate_separator_token(void);
+const char* calculate_number_regex(void);
+const char* calculate_name_regex(void);
+const char* calculate_symbol_regex(void);
+const char* calculate_tokenizer_regex(void);
 
 #define calculate_get_parser _calculate_get_parser
 #define calculate_get_default_parser _calculate_get_default_parser
