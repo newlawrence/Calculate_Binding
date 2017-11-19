@@ -14,32 +14,58 @@ int _calculate_has_operator(cParser parser, const char* token) {
 }
 
 
-double _calculate_get_constant(cError error, cParser parser, const char* token) {
+double _calculate_get_constant(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     return evaluate(
-        [parser, token]() { return reinterpret_cast<Parser*>(parser)->get<Constant>(token); },
+        [parser, token]() {
+            return reinterpret_cast<Parser*>(parser)->get<Constant>(token);
+        },
         error
     );
 }
 
-cFunction _calculate_get_function(cError error, cParser parser, const char* token) {
+cFunction _calculate_get_function(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     return Factory<Function, cFunction>::create(
-        [parser, token]() { return reinterpret_cast<Parser*>(parser)->get<Function>(token); },
+        [parser, token]() {
+            return reinterpret_cast<Parser*>(parser)->get<Function>(token);
+        },
         error
     );
 }
 
-cOperator _calculate_get_operator(cError error, cParser parser, const char* token) {
+cOperator _calculate_get_operator(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     return Factory<Operator, cOperator>::create(
-        [parser, token]() { return reinterpret_cast<Parser*>(parser)->get<Operator>(token); },
+        [parser, token]() {
+            return reinterpret_cast<Parser*>(parser)->get<Operator>(token);
+        },
         error
     );
 }
 
 
-void _calculate_set_constant(cError error, cParser parser, const char* token, double value) {
+void _calculate_set_constant(
+    cError error,
+    cParser parser,
+    const char* token,
+    double value
+) {
     just_do(
         [parser, token, value]() {
-            reinterpret_cast<Parser*>(parser)->set<Constant>(token, value);
+            reinterpret_cast<Parser*>(parser)->set<Constant>(
+                token,
+                value
+            );
         },
         error
     );
@@ -53,7 +79,10 @@ void _calculate_set_function1(
 ) {
     just_do(
         [parser, token, function]() {
-            reinterpret_cast<Parser*>(parser)->set<Function>(token, &(*function));
+            reinterpret_cast<Parser*>(parser)->set<Function>(
+                token,
+                &(*function)
+            );
         },
         error
     );
@@ -67,7 +96,10 @@ void _calculate_set_function2(
 ) {
     just_do(
         [parser, token, function]() {
-            reinterpret_cast<Parser*>(parser)->set<Function>(token, &(*function));
+            reinterpret_cast<Parser*>(parser)->set<Function>(
+                token,
+                &(*function)
+            );
         },
         error
     );
@@ -81,7 +113,10 @@ void _calculate_set_function3(
 ) {
     just_do(
         [parser, token, function]() {
-            reinterpret_cast<Parser*>(parser)->set<Function>(token, &(*function));
+            reinterpret_cast<Parser*>(parser)->set<Function>(
+                token,
+                &(*function)
+            );
         },
         error
     );
@@ -122,7 +157,9 @@ void _calculate_set_callback1(
         [parser, token, handler, cbck]() {
             reinterpret_cast<Parser*>(parser)->set<Function>(
                 token,
-                [handler, cbck](double x1) { return cbck(handler, x1); }
+                [handler, cbck](double x1) {
+                    return cbck(handler, x1);
+                }
             );
         },
         error
@@ -140,7 +177,9 @@ void _calculate_set_callback2(
         [parser, token, handler, cbck]() {
             reinterpret_cast<Parser*>(parser)->set<Function>(
                 token,
-                [handler, cbck](double x1, double x2) { return cbck(handler, x1, x2); }
+                [handler, cbck](double x1, double x2) {
+                    return cbck(handler, x1, x2);
+                }
             );
         },
         error
@@ -184,7 +223,9 @@ void _calculate_set_operator_callback(
                 alias,
                 precedence,
                 static_cast<Associativity>(associativity),
-                [handler, cbck](double x1, double x2) { return cbck(handler, x1, x2); }
+                [handler, cbck](double x1, double x2) {
+                    return cbck(handler, x1, x2);
+                }
             );
         },
         error
@@ -192,7 +233,11 @@ void _calculate_set_operator_callback(
 }
 
 
-void _calculate_remove_constant(cError error, cParser parser, const char* token) {
+void _calculate_remove_constant(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     just_do(
         [parser, token]() {
             reinterpret_cast<Parser*>(parser)->remove<Constant>(token);
@@ -201,7 +246,11 @@ void _calculate_remove_constant(cError error, cParser parser, const char* token)
     );
 }
 
-void _calculate_remove_function(cError error, cParser parser, const char* token) {
+void _calculate_remove_function(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     just_do(
         [parser, token]() {
             reinterpret_cast<Parser*>(parser)->remove<Function>(token);
@@ -210,7 +259,11 @@ void _calculate_remove_function(cError error, cParser parser, const char* token)
     );
 }
 
-void _calculate_remove_operator(cError error, cParser parser, const char* token) {
+void _calculate_remove_operator(
+    cError error,
+    cParser parser,
+    const char* token
+) {
     just_do(
         [parser, token]() {
             reinterpret_cast<Parser*>(parser)->remove<Operator>(token);
@@ -220,10 +273,16 @@ void _calculate_remove_operator(cError error, cParser parser, const char* token)
 }
 
 
-void _calculate_list_constants(cParser parser, char* tokens, size_t length) {
+void _calculate_list_constants(
+    cParser parser,
+    char* tokens,
+    size_t length
+) {
     write(
         [parser]() {
-            return to_string(reinterpret_cast<Parser*>(parser)->list<Constant>());
+            return to_string(
+                reinterpret_cast<Parser*>(parser)->list<Constant>()
+            );
         },
         tokens,
         length,
@@ -234,7 +293,9 @@ void _calculate_list_constants(cParser parser, char* tokens, size_t length) {
 void _calculate_list_functions(cParser parser, char* tokens, size_t length) {
     write(
         [parser]() {
-            return to_string(reinterpret_cast<Parser*>(parser)->list<Function>());
+            return to_string(
+                reinterpret_cast<Parser*>(parser)->list<Function>()
+            );
         },
         tokens,
         length,
@@ -245,7 +306,9 @@ void _calculate_list_functions(cParser parser, char* tokens, size_t length) {
 void _calculate_list_operators(cParser parser, char* tokens, size_t length) {
     write(
         [parser]() {
-            return to_string(reinterpret_cast<Parser*>(parser)->list<Operator>());
+            return to_string(
+                reinterpret_cast<Parser*>(parser)->list<Operator>()
+            );
         },
         tokens,
         length,
@@ -318,9 +381,13 @@ size_t _calculate_precedence(cOperator symbol) {
 }
 
 cAssociativity _calculate_associativity(cOperator symbol) {
-    return static_cast<cAssociativity>(reinterpret_cast<Operator*>(symbol)->associativity);
+    return static_cast<cAssociativity>(
+        reinterpret_cast<Operator*>(symbol)->associativity
+    );
 }
 
 cFunction _calculate_function(cOperator symbol) {
-    return Factory<Function, cFunction>::get(reinterpret_cast<Operator*>(symbol)->function);
+    return Factory<Function, cFunction>::get(
+        reinterpret_cast<Operator*>(symbol)->function
+    );
 }

@@ -14,12 +14,18 @@ extern "C" {
 #define _CALCCNT(...) (sizeof((int[]){ __VA_ARGS__ })/sizeof(int))
 #define _CALCDEF(...) NULL, __VA_ARGS__
 #define _CALCEXP(...) __VA_ARGS__
-#define _CALCDF3(f, ...) f(_CALCARG(__VA_ARGS__, , , , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
-#define _CALCDF4(f, ...) f(_CALCARG(__VA_ARGS__, , , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
-#define _CALCDF5(f, ...) f(_CALCARG(__VA_ARGS__, , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
-#define _CALCDF6(f, ...) f(_CALCARG(__VA_ARGS__, , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
-#define _CALCDF7(f, ...) f(_CALCARG(__VA_ARGS__, , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
-#define _CALCDF8(f, ...) f(_CALCARG(__VA_ARGS__, _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF3(f, ...) \
+    f(_CALCARG(__VA_ARGS__, , , , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF4(f, ...) \
+    f(_CALCARG(__VA_ARGS__, , , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF5(f, ...) \
+    f(_CALCARG(__VA_ARGS__, , , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF6(f, ...) \
+    f(_CALCARG(__VA_ARGS__, , , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF7(f, ...) \
+    f(_CALCARG(__VA_ARGS__, , _CALCEXP, _CALCDEF, )(__VA_ARGS__))
+#define _CALCDF8(f, ...) \
+    f(_CALCARG(__VA_ARGS__, _CALCEXP, _CALCDEF, )(__VA_ARGS__))
 
 struct calculate_ParserHandler;
 struct calculate_ExpressionHandler;
@@ -36,7 +42,11 @@ enum calculate_SymbolType {
     calculate_FUN,
     calculate_OPE
 };
-enum calculate_AssociativityType {calculate_LEFT=0, calculate_RIGHT, calculate_BOTH};
+enum calculate_AssociativityType {
+    calculate_LEFT=0,
+    calculate_RIGHT,
+    calculate_BOTH
+};
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -81,35 +91,58 @@ int _calculate_has_constant(calculate_Parser, const char*);
 int _calculate_has_function(calculate_Parser, const char*);
 int _calculate_has_operator(calculate_Parser, const char*);
 
-#define calculate_get_constant(...) _CALCDF3(_calculate_get_constant, __VA_ARGS__)
-#define calculate_get_function(...) _CALCDF3(_calculate_get_function, __VA_ARGS__)
-#define calculate_get_operator(...) _CALCDF3(_calculate_get_operator, __VA_ARGS__)
-double _calculate_get_constant(calculate_Error, calculate_Parser, const char*);
-calculate_Function _calculate_get_function(calculate_Error, calculate_Parser, const char*);
-calculate_Operator _calculate_get_operator(calculate_Error, calculate_Parser, const char*);
+#define calculate_get_constant(...) \
+    _CALCDF3(_calculate_get_constant, __VA_ARGS__)
+#define calculate_get_function(...) \
+    _CALCDF3(_calculate_get_function, __VA_ARGS__)
+#define calculate_get_operator(...) \
+    _CALCDF3(_calculate_get_operator, __VA_ARGS__)
+double _calculate_get_constant(
+    calculate_Error,
+    calculate_Parser,
+    const char*
+);
+calculate_Function _calculate_get_function(
+    calculate_Error,
+    calculate_Parser,
+    const char*
+);
+calculate_Operator _calculate_get_operator(
+    calculate_Error,
+    calculate_Parser,
+    const char*
+);
 
-#define calculate_set_constant(...) _CALCDF4(_calculate_set_constant, __VA_ARGS__)
-#define _calculate_set_function(x0, x1, x2, x3, ...) _Generic((x0),                            \
-    calculate_Error: _Generic((x3),                                                            \
-        double(*)(double): _calculate_set_function1,                                           \
-        double(*)(double, double): _calculate_set_function2,                                   \
-        double(*)(double, double, double): _calculate_set_function3,                           \
-        default: _calculate_set_function1                                                      \
-    ),                                                                                         \
-    default: _Generic((x2),                                                                    \
-        double(*)(double): _calculate_set_function1,                                           \
-        double(*)(double, double): _calculate_set_function2,                                   \
-        double(*)(double, double, double): _calculate_set_function3                            \
-    )                                                                                          \
-)(                                                                                             \
-    _Generic((x0), calculate_Error: (x0), default: NULL),                                      \
-    _Generic((x0), calculate_Error: (x1), default: (x0)),                                      \
-    _Generic((x0), calculate_Error: (x2), default: (x1)),                                      \
-    _Generic((x0), calculate_Error: (x3), default: (x2))                                       \
+#define calculate_set_constant(...) \
+    _CALCDF4(_calculate_set_constant, __VA_ARGS__)
+#define _calculate_set_function(x0, x1, x2, x3, ...) _Generic((x0),            \
+    calculate_Error: _Generic((x3),                                            \
+        double(*)(double): _calculate_set_function1,                           \
+        double(*)(double, double): _calculate_set_function2,                   \
+        double(*)(double, double, double): _calculate_set_function3,           \
+        default: _calculate_set_function1                                      \
+    ),                                                                         \
+    default: _Generic((x2),                                                    \
+        double(*)(double): _calculate_set_function1,                           \
+        double(*)(double, double): _calculate_set_function2,                   \
+        double(*)(double, double, double): _calculate_set_function3            \
+    )                                                                          \
+)(                                                                             \
+    _Generic((x0), calculate_Error: (x0), default: NULL),                      \
+    _Generic((x0), calculate_Error: (x1), default: (x0)),                      \
+    _Generic((x0), calculate_Error: (x2), default: (x1)),                      \
+    _Generic((x0), calculate_Error: (x3), default: (x2))                       \
 )
-#define calculate_set_function(...) _calculate_set_function(__VA_ARGS__, 0, 0)
-#define calculate_set_operator(...) _CALCDF7(_calculate_set_operator, __VA_ARGS__)
-void _calculate_set_constant(calculate_Error, calculate_Parser, const char*, double);
+#define calculate_set_function(...) \
+    _calculate_set_function(__VA_ARGS__, 0, 0)
+#define calculate_set_operator(...) \
+    _CALCDF7(_calculate_set_operator, __VA_ARGS__)
+void _calculate_set_constant(
+    calculate_Error,
+    calculate_Parser,
+    const char*,
+    double
+);
 void _calculate_set_function1(
     calculate_Error,
     calculate_Parser,
@@ -138,29 +171,29 @@ void _calculate_set_operator(
     double(*)(double, double)
 );
 
-#define _calculate_set_callback(x0, x1, x2, x3, x4, ...) _Generic((x0),                        \
-    calculate_Error: _Generic((x4),                                                            \
-        double(*)(void*, double): _calculate_set_callback1,                                    \
-        double(*)(void*, double, double): _calculate_set_callback2,                            \
-        double(*)(void*, double, double, double): _calculate_set_callback3,                    \
-        default: _calculate_set_callback1                                                      \
-    ),                                                                                         \
-    default: _Generic((x3),                                                                    \
-        double(*)(void*, double): _calculate_set_callback1,                                    \
-        double(*)(void*, double, double): _calculate_set_callback2,                            \
-        double(*)(void*, double, double, double): _calculate_set_callback3                     \
-    )                                                                                          \
-)(                                                                                             \
-    _Generic((x0), calculate_Error: (x0), default: NULL),                                      \
-    _Generic((x0), calculate_Error: (x1), default: (x0)),                                      \
-    _Generic((x0), calculate_Error: (x2), default: (x1)),                                      \
-    _Generic((x0), calculate_Error: (x3), default: (x2)),                                      \
-    _Generic((x0), calculate_Error: (x4), default: (x3))                                       \
+#define _calculate_set_callback(x0, x1, x2, x3, x4, ...) _Generic((x0),        \
+    calculate_Error: _Generic((x4),                                            \
+        double(*)(void*, double): _calculate_set_callback1,                    \
+        double(*)(void*, double, double): _calculate_set_callback2,            \
+        double(*)(void*, double, double, double): _calculate_set_callback3,    \
+        default: _calculate_set_callback1                                      \
+    ),                                                                         \
+    default: _Generic((x3),                                                    \
+        double(*)(void*, double): _calculate_set_callback1,                    \
+        double(*)(void*, double, double): _calculate_set_callback2,            \
+        double(*)(void*, double, double, double): _calculate_set_callback3     \
+    )                                                                          \
+)(                                                                             \
+    _Generic((x0), calculate_Error: (x0), default: NULL),                      \
+    _Generic((x0), calculate_Error: (x1), default: (x0)),                      \
+    _Generic((x0), calculate_Error: (x2), default: (x1)),                      \
+    _Generic((x0), calculate_Error: (x3), default: (x2)),                      \
+    _Generic((x0), calculate_Error: (x4), default: (x3))                       \
 )
 #define calculate_set_callback(...) _calculate_set_callback(__VA_ARGS__, 0, 0)
-#define calculate_set_operator_callback(...) _CALCDF8(                                         \
-    _calculate_set_operator_callback,                                                          \
-    __VA_ARGS__                                                                                \
+#define calculate_set_operator_callback(...) _CALCDF8(                         \
+    _calculate_set_operator_callback,                                          \
+    __VA_ARGS__                                                                \
 )
 void _calculate_set_callback1(
     calculate_Error,
@@ -194,9 +227,12 @@ void _calculate_set_operator_callback(
     double(*)(void*, double, double)
 );
 
-#define calculate_remove_constant(...) _CALCDF3(_calculate_remove_constant, __VA_ARGS__)
-#define calculate_remove_function(...) _CALCDF3(_calculate_remove_function, __VA_ARGS__)
-#define calculate_remove_operator(...) _CALCDF3(_calculate_remove_operator, __VA_ARGS__)
+#define calculate_remove_constant(...) \
+    _CALCDF3(_calculate_remove_constant, __VA_ARGS__)
+#define calculate_remove_function(...) \
+    _CALCDF3(_calculate_remove_function, __VA_ARGS__)
+#define calculate_remove_operator(...) \
+    _CALCDF3(_calculate_remove_operator, __VA_ARGS__)
 void _calculate_remove_constant(calculate_Error, calculate_Parser, const char*);
 void _calculate_remove_function(calculate_Error, calculate_Parser, const char*);
 void _calculate_remove_operator(calculate_Error, calculate_Parser, const char*);
@@ -210,14 +246,29 @@ void _calculate_list_operators(calculate_Parser, char*, size_t);
 
 #define calculate_cast(...) _CALCDF3(_calculate_cast, __VA_ARGS__)
 #define calculate_to_string(...) _CALCDF5(_calculate_to_string, __VA_ARGS__)
-double _calculate_cast(calculate_Error, calculate_Parser, const char*);
-void _calculate_to_string(calculate_Error, calculate_Parser, double, char*, size_t);
+double _calculate_cast(
+    calculate_Error,
+    calculate_Parser,
+    const char*
+);
+void _calculate_to_string(
+    calculate_Error,
+    calculate_Parser,
+    double,
+    char*,
+    size_t
+);
 
-#define calculate_create_node(...) _CALCDF5(_calculate_create_node, __VA_ARGS__)
-#define calculate_from_value(...) _CALCDF3(_calculate_from_value, __VA_ARGS__)
-#define calculate_from_infix(...) _CALCDF4(_calculate_from_infix, __VA_ARGS__)
-#define calculate_from_postfix(...) _CALCDF4(_calculate_from_postfix, __VA_ARGS__)
-#define calculate_parse(...) _CALCDF3(_calculate_parse, __VA_ARGS__)
+#define calculate_create_node(...) \
+    _CALCDF5(_calculate_create_node, __VA_ARGS__)
+#define calculate_from_value(...) \
+    _CALCDF3(_calculate_from_value, __VA_ARGS__)
+#define calculate_from_infix(...) \
+    _CALCDF4(_calculate_from_infix, __VA_ARGS__)
+#define calculate_from_postfix(...) \
+    _CALCDF4(_calculate_from_postfix, __VA_ARGS__)
+#define calculate_parse(...) \
+    _CALCDF3(_calculate_parse, __VA_ARGS__)
 calculate_Expression _calculate_create_node(
     calculate_Error,
     calculate_Parser,
@@ -225,7 +276,11 @@ calculate_Expression _calculate_create_node(
     calculate_Nodes,
     const char*
 );
-calculate_Expression _calculate_from_value(calculate_Error, calculate_Parser, double);
+calculate_Expression _calculate_from_value(
+    calculate_Error,
+    calculate_Parser,
+    double
+);
 calculate_Expression _calculate_from_infix(
     calculate_Error,
     calculate_Parser,
@@ -238,19 +293,30 @@ calculate_Expression _calculate_from_postfix(
     const char*,
     const char*
 );
-calculate_Expression _calculate_parse(calculate_Error, calculate_Parser, const char*);
+calculate_Expression _calculate_parse(
+    calculate_Error,
+    calculate_Parser,
+    const char*
+);
 
-#define calculate_new_variables(...) _CALCDF4(_calculate_new_variables, __VA_ARGS__)
-#define calculate_optimize _calculate_optimize
-#define calculate_replace(...) _CALCDF6(_calculate_replace, __VA_ARGS__)
-#define calculate_substitute(...) _CALCDF5(_calculate_substitute, __VA_ARGS__)
+#define calculate_new_variables(...) \
+    _CALCDF4(_calculate_new_variables, __VA_ARGS__)
+#define calculate_optimize \
+    _calculate_optimize
+#define calculate_replace(...) \
+    _CALCDF6(_calculate_replace, __VA_ARGS__)
+#define calculate_substitute(...) \
+    _CALCDF5(_calculate_substitute, __VA_ARGS__)
 calculate_Expression _calculate_new_variables(
     calculate_Error,
     calculate_Parser,
     calculate_Expression,
     const char*
 );
-calculate_Expression _calculate_optimize(calculate_Parser, calculate_Expression);
+calculate_Expression _calculate_optimize(
+    calculate_Parser,
+    calculate_Expression
+);
 calculate_Expression _calculate_replace(
     calculate_Error,
     calculate_Parser,
@@ -276,9 +342,17 @@ calculate_Expression _calculate_substitute(
 calculate_Nodes _calculate_get_nodes(void);
 calculate_Nodes _calculate_promote(calculate_Expression);
 size_t _calculate_size(calculate_Nodes);
-calculate_Expression _calculate_get_node(calculate_Error, calculate_Nodes, size_t);
+calculate_Expression _calculate_get_node(
+    calculate_Error,
+    calculate_Nodes,
+    size_t
+);
 calculate_Nodes _calculate_insert_node(calculate_Nodes, calculate_Expression);
-calculate_Nodes _calculate_remove_node(calculate_Error, calculate_Nodes, size_t);
+calculate_Nodes _calculate_remove_node(
+    calculate_Error,
+    calculate_Nodes,
+    size_t
+);
 
 #define calculate_hash _calculate_hash
 #define calculate_equal _calculate_equal
@@ -299,21 +373,21 @@ void _calculate_infix(calculate_Expression, char*, size_t);
 void _calculate_postfix(calculate_Expression, char*, size_t);
 void _calculate_variables(calculate_Expression, char*, size_t);
 
-#define _calculate_evaluate(x0, x1, x2, x3, x4, ...) _Generic((x0),                            \
-    calculate_Error: _Generic((x1),                                                            \
-        calculate_Expression: _calculate_evaluate_expression,                                  \
-        calculate_Function: _calculate_evaluate_function,                                      \
-        default: _calculate_evaluate_expression                                                \
-    ),                                                                                         \
-    calculate_Expression: _calculate_evaluate_expression,                                      \
-    calculate_Function: _calculate_evaluate_function                                           \
-)(                                                                                             \
-    _Generic((x0), calculate_Error: (x0), default: NULL),                                      \
-    _Generic((x0), calculate_Error: (x1), default: (x0)),                                      \
-    _CALCCNT(__VA_ARGS__) - _Generic((x0), calculate_Error: 2, default: 1),                    \
-    _Generic((x0), calculate_Error: (x2), default: (x1)),                                      \
-    _Generic((x0), calculate_Error: (x3), default: (x2)),                                      \
-    _Generic((x0), calculate_Error: (x4), default: (x3))                                       \
+#define _calculate_evaluate(x0, x1, x2, x3, x4, ...) _Generic((x0),            \
+    calculate_Error: _Generic((x1),                                            \
+        calculate_Expression: _calculate_evaluate_expression,                  \
+        calculate_Function: _calculate_evaluate_function,                      \
+        default: _calculate_evaluate_expression                                \
+    ),                                                                         \
+    calculate_Expression: _calculate_evaluate_expression,                      \
+    calculate_Function: _calculate_evaluate_function                           \
+)(                                                                             \
+    _Generic((x0), calculate_Error: (x0), default: NULL),                      \
+    _Generic((x0), calculate_Error: (x1), default: (x0)),                      \
+    _CALCCNT(__VA_ARGS__) - _Generic((x0), calculate_Error: 2, default: 1),    \
+    _Generic((x0), calculate_Error: (x2), default: (x1)),                      \
+    _Generic((x0), calculate_Error: (x3), default: (x2)),                      \
+    _Generic((x0), calculate_Error: (x4), default: (x3))                       \
 )
 #define calculate_evaluate(...) _calculate_evaluate(__VA_ARGS__, 0, 0, 0, 0, 0)
 double _calculate_evaluate_expression(
@@ -340,7 +414,11 @@ size_t _calculate_arguments(calculate_Function);
 #define calculate_precedence _calculate_precedence
 #define calculate_associativity _calculate_associativity
 #define calculate_function _calculate_function
-void _calculate_alias(calculate_Operator, char*, size_t);
+void _calculate_alias(
+    calculate_Operator,
+    char*,
+    size_t
+);
 size_t _calculate_precedence(calculate_Operator);
 calculate_Associativity _calculate_associativity(calculate_Operator);
 calculate_Function _calculate_function(calculate_Operator);
@@ -352,13 +430,13 @@ calculate_Error _calculate_get_error(void);
 int _calculate_status(calculate_Error);
 void _calculate_message(calculate_Error, char*, size_t);
 
-#define calculate_check(resource) _Generic((resource),                                         \
-        calculate_Parser: _calculate_check_parser,                                             \
-        calculate_Expression: _calculate_check_expression,                                     \
-        calculate_Nodes: _calculate_check_nodes,                                               \
-        calculate_Function: _calculate_check_function,                                         \
-        calculate_Operator: _calculate_check_operator,                                         \
-        calculate_Error: _calculate_check_error,                                               \
+#define calculate_check(resource) _Generic((resource),                         \
+        calculate_Parser: _calculate_check_parser,                             \
+        calculate_Expression: _calculate_check_expression,                     \
+        calculate_Nodes: _calculate_check_nodes,                               \
+        calculate_Function: _calculate_check_function,                         \
+        calculate_Operator: _calculate_check_operator,                         \
+        calculate_Error: _calculate_check_error,                               \
     )(resource)
 int _calculate_check_parser(calculate_Parser);
 int _calculate_check_nodes(calculate_Nodes);
@@ -367,13 +445,13 @@ int _calculate_check_function(calculate_Function);
 int _calculate_check_operator(calculate_Operator);
 int _calculate_check_error(calculate_Error);
 
-#define calculate_free(resource) _Generic((resource),                                          \
-        calculate_Parser: _calculate_free_parser,                                              \
-        calculate_Expression: _calculate_free_expression,                                      \
-        calculate_Nodes: _calculate_free_nodes,                                                \
-        calculate_Function: _calculate_free_function,                                          \
-        calculate_Operator: _calculate_free_operator,                                          \
-        calculate_Error: _calculate_free_error,                                                \
+#define calculate_free(resource) _Generic((resource),                          \
+        calculate_Parser: _calculate_free_parser,                              \
+        calculate_Expression: _calculate_free_expression,                      \
+        calculate_Nodes: _calculate_free_nodes,                                \
+        calculate_Function: _calculate_free_function,                          \
+        calculate_Operator: _calculate_free_operator,                          \
+        calculate_Error: _calculate_free_error,                                \
     )(resource)
 void _calculate_free_parser(calculate_Parser);
 void _calculate_free_nodes(calculate_Nodes);

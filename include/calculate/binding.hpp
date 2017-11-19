@@ -35,7 +35,10 @@ struct Error {
     bool status;
     std::string message;
     void reset() { status = false, message = ""; }
-    void notify(bool state, const std::string& what) { status = state, message = what; }
+    void notify(bool state, const std::string& what) {
+        status = state;
+        message = what;
+    }
 };
 
 
@@ -47,11 +50,15 @@ std::unordered_map<Type*, std::unique_ptr<Type>>& cache() {
 
 template<typename Cache, typename Wrapper>
 bool find(Wrapper resource) {
-    return cache<Cache>().find(reinterpret_cast<Cache*>(resource)) != cache<Cache>().end();
+    return cache<Cache>().find(
+        reinterpret_cast<Cache*>(resource)
+    ) != cache<Cache>().end();
 }
 
 template<typename Cache, typename Wrapper>
-void free(Wrapper resource) { cache<Cache>().erase(reinterpret_cast<Cache*>(resource)); }
+void free(Wrapper resource) {
+    cache<Cache>().erase(reinterpret_cast<Cache*>(resource));
+}
 
 template<typename Cache, typename Wrapper, typename Type = Cache>
 struct Factory {

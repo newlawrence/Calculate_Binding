@@ -27,7 +27,9 @@ void _calculate_to_string(
     size_t length
 ) {
     write(
-        [parser, value]() { return reinterpret_cast<Parser*>(parser)->to_string(value); },
+        [parser, value]() {
+            return reinterpret_cast<Parser*>(parser)->to_string(value);
+        },
         expression,
         length,
         error
@@ -44,8 +46,11 @@ cExpression _calculate_create_node(
 ) {
     return Factory<Expression, cExpression>::create(
         [parser, token, variables, nodes]() {
-            return reinterpret_cast<Parser*>(parser)->
-                create_node(token, *reinterpret_cast<Nodes*>(nodes), from_string(variables));
+            return reinterpret_cast<Parser*>(parser)->create_node(
+                token,
+                *reinterpret_cast<Nodes*>(nodes),
+                from_string(variables)
+            );
         },
         error
     );
@@ -53,7 +58,9 @@ cExpression _calculate_create_node(
 
 cExpression _calculate_from_value(cError error, cParser parser, double value) {
     return Factory<Expression, cExpression>::create(
-        [parser, value]() { return reinterpret_cast<Parser*>(parser)->create_node(value); },
+        [parser, value]() {
+            return reinterpret_cast<Parser*>(parser)->create_node(value);
+        },
         error
     );
 }
@@ -88,9 +95,15 @@ cExpression _calculate_from_postfix(
     );
 }
 
-cExpression _calculate_parse(cError error, cParser parser, const char* expression) {
+cExpression _calculate_parse(
+    cError error,
+    cParser parser,
+    const char* expression
+) {
     return Factory<Expression, cExpression>::create(
-        [parser, expression]() { return reinterpret_cast<Parser*>(parser)->parse(expression); },
+        [parser, expression]() {
+            return reinterpret_cast<Parser*>(parser)->parse(expression);
+        },
         error
     );
 }
@@ -104,8 +117,10 @@ cExpression _calculate_new_variables(
 ) {
     return Factory<Expression, cExpression>::create(
         [parser, expression, variables]() {
-            return reinterpret_cast<Parser*>(parser)->
-                variables(*reinterpret_cast<Expression*>(expression), from_string(variables));
+            return reinterpret_cast<Parser*>(parser)->variables(
+                *reinterpret_cast<Expression*>(expression),
+                from_string(variables)
+            );
         },
         error
     );
@@ -113,7 +128,8 @@ cExpression _calculate_new_variables(
 
 cExpression _calculate_optimize(cParser parser, cExpression expression) {
     return Factory<Expression, cExpression>::get(
-        reinterpret_cast<Parser*>(parser)->optimize(*reinterpret_cast<Expression*>(expression))
+        reinterpret_cast<Parser*>(parser)->
+            optimize(*reinterpret_cast<Expression*>(expression))
     );
 }
 
@@ -149,7 +165,11 @@ cExpression _calculate_substitute(
     return Factory<Expression, cExpression>::create(
         [parser, expression, variable, value]() {
             return reinterpret_cast<Parser*>(parser)->
-                substitute(*reinterpret_cast<Expression*>(expression), variable, value);
+                substitute(
+                    *reinterpret_cast<Expression*>(expression),
+                    variable,
+                    value
+                );
         },
         error
     );

@@ -6,7 +6,9 @@ cNodes _calculate_get_nodes() {
 }
 
 cNodes _calculate_promote(cExpression expression) {
-    return Factory<Nodes, cNodes>::get(Nodes{*reinterpret_cast<Expression*>(expression)});
+    return Factory<Nodes, cNodes>::get(
+        Nodes{*reinterpret_cast<Expression*>(expression)}
+    );
 }
 
 size_t _calculate_size(cNodes nodes) {
@@ -41,7 +43,9 @@ cNodes _calculate_remove_node(cError error, cNodes nodes, size_t n) {
 
 
 size_t _calculate_hash(cExpression expression) {
-    return std::hash<typename Parser::Expression>{}(*reinterpret_cast<Expression*>(expression));
+    return std::hash<typename Parser::Expression>{}(
+        *reinterpret_cast<Expression*>(expression)
+    );
 }
 
 int _calculate_equal(cExpression one, cExpression another) {
@@ -55,7 +59,9 @@ void _calculate_token(cExpression expression, char* token, size_t length) {
 }
 
 cSymbol _calculate_symbol(cExpression expression) {
-    return static_cast<cSymbol>(reinterpret_cast<Expression*>(expression)->symbol());
+    return static_cast<cSymbol>(
+        reinterpret_cast<Expression*>(expression)->symbol()
+    );
 }
 
 size_t _calculate_branches(cExpression expression) {
@@ -64,21 +70,43 @@ size_t _calculate_branches(cExpression expression) {
 
 cNodes _calculate_nodes(cExpression expression) {
     Nodes nodes;
-    for (size_t i = 0; i < reinterpret_cast<Expression*>(expression)->branches(); i++)
-        nodes.push_back(reinterpret_cast<Expression*>(expression)->operator[](i));
+    for (
+        size_t i = 0;
+        i < reinterpret_cast<Expression*>(expression)->branches();
+        i++
+    )
+        nodes.push_back(
+            reinterpret_cast<Expression*>(expression)->operator[](i)
+        );
     return Factory<Nodes, cNodes>::get(nodes);
 }
 
 void _calculate_infix(cExpression expression, char* infix, size_t length) {
-    write(infix, reinterpret_cast<Expression*>(expression)->infix(), length);
+    write(
+        infix,
+        reinterpret_cast<Expression*>(expression)->infix(),
+        length
+    );
 }
 
 void _calculate_postfix(cExpression expression, char* postfix, size_t length) {
-    write(postfix, reinterpret_cast<Expression*>(expression)->postfix(), length);
+    write(
+        postfix,
+        reinterpret_cast<Expression*>(expression)->postfix(),
+        length
+    );
 }
 
-void _calculate_variables(cExpression expression, char* variables, size_t length) {
-    write(variables, to_string(reinterpret_cast<Expression*>(expression)->variables()), length);
+void _calculate_variables(
+    cExpression expression,
+    char* variables,
+    size_t length
+) {
+    write(
+        variables,
+        to_string(reinterpret_cast<Expression*>(expression)->variables()),
+        length
+    );
 }
 
 double _calculate_evaluate_expression(
@@ -93,28 +121,32 @@ double _calculate_evaluate_expression(
     case 1:
         return evaluate(
             [expression, x]() {
-                return reinterpret_cast<Expression*>(expression)->operator()(x);
+                return reinterpret_cast<Expression*>(expression)->
+                    operator()(x);
             },
             error
         );
     case 2:
         return evaluate(
             [expression, x, y]() {
-                return reinterpret_cast<Expression*>(expression)->operator()(x, y);
+                return reinterpret_cast<Expression*>(expression)->
+                    operator()(x, y);
             },
             error
         );
     case 3:
         return evaluate(
             [expression, x, y, z]() {
-                return reinterpret_cast<Expression*>(expression)->operator()(x, y, z);
+                return reinterpret_cast<Expression*>(expression)->
+                    operator()(x, y, z);
             },
             error
         );
     }
     return evaluate(
         [expression]() {
-            return reinterpret_cast<Expression*>(expression)->operator()();
+            return reinterpret_cast<Expression*>(expression)->
+                operator()();
         },
         error
     );
