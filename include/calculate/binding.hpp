@@ -24,12 +24,7 @@ using cOperator = calculate_Operator;
 using cError = calculate_Error;
 using cSymbol = calculate_Symbol;
 using cAssociativity = calculate_Associativity;
-using cFunction1 = double(*)(double);
-using cFunction2 = double(*)(double, double);
-using cFunction3 = double(*)(double, double, double);
-using cCbck1 = double(*)(void*, double);
-using cCbck2 = double(*)(void*, double, double);
-using cCbck3 = double(*)(void*, double, double, double);
+
 
 struct Error {
     bool status;
