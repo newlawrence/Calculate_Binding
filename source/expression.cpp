@@ -16,10 +16,11 @@ size_t calculate_size(cNodes nodes) {
 }
 
 cExpression calculate_get_node(cError err, cNodes nodes, size_t n) {
-    return Factory<Expression, cExpression>::create(
-        [nodes, n]() { return reinterpret_cast<Nodes*>(nodes)->at(n); },
-        err
-    );
+    auto operation = [nodes, n]() {
+        return reinterpret_cast<Nodes*>(nodes)->at(n);
+    };
+
+    return Factory<Expression, cExpression>::create(operation, err);
 }
 
 cNodes calculate_insert_node(cNodes nodes, cExpression expr) {
@@ -31,14 +32,13 @@ cNodes calculate_insert_node(cNodes nodes, cExpression expr) {
 cNodes calculate_remove_node(cError err, cNodes nodes, size_t n) {
     using std::swap;
     Nodes trimmed{*reinterpret_cast<Nodes*>(nodes)};
-    return Factory<Nodes, cNodes>::create(
-        [trimmed{std::move(trimmed)}, n]() mutable {
-            swap(trimmed.at(n), trimmed.back());
-            trimmed.pop_back();
-            return trimmed;
-        },
-        err
-    );
+    auto operation = [trimmed{std::move(trimmed)}, n]() mutable {
+        swap(trimmed.at(n), trimmed.back());
+        trimmed.pop_back();
+        return trimmed;
+    };
+
+    return Factory<Nodes, cNodes>::create(operation, err);
 }
 
 
