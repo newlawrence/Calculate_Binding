@@ -53,6 +53,7 @@ typedef struct calculate_ErrorHandler* calculate_Error;
 typedef enum calculate_SymbolType calculate_Symbol;
 typedef enum calculate_AssociativityType calculate_Associativity;
 #endif
+typedef void(*calculate_Pointer)(void);
 
 #define cParser calculate_Parser
 #define cExpression calculate_Expression
@@ -62,6 +63,7 @@ typedef enum calculate_AssociativityType calculate_Associativity;
 #define cError calculate_Error
 #define cSymbol calculate_Symbol
 #define cAssociativity calculate_Associativity
+#define cPointer calculate_Pointer
 
 
 const char* calculate_left_token(void);
@@ -87,7 +89,7 @@ calculate_Function calculate_get_function(cError, cParser, const char*);
 calculate_Operator calculate_get_operator(cError, cParser, const char*);
 
 void calculate_set_constant(cError, cParser, const char*, double);
-void calculate_set_function(cError, cParser, const char*, void(*)(void));
+void calculate_set_function(cError, cParser, const char*, cPointer);
 void calculate_set_operator(
     cError,
     cParser,
@@ -95,7 +97,7 @@ void calculate_set_operator(
     const char*,
     size_t,
     cAssociativity,
-    double(*)(double, double)
+    cPointer
 );
 
 void calculate_set_function_callback(
@@ -103,7 +105,7 @@ void calculate_set_function_callback(
     cParser,
     const char*,
     void*,
-    void(*)(void*)
+    cPointer
 );
 void calculate_set_operator_callback(
     cError,
@@ -113,7 +115,7 @@ void calculate_set_operator_callback(
     const char*,
     size_t,
     cAssociativity,
-    double(*)(void*, double, double)
+    cPointer
 );
 
 void calculate_remove_constant(cError, cParser, const char*);
@@ -204,14 +206,15 @@ void calculate_free_operator(cOperator);
 void calculate_free_error(cError);
 
 
-#undef cParser
-#undef cExpression
-#undef cNodes
-#undef cFunction
-#undef cOperator
-#undef cError
-#undef cSymbol
+#undef cPointer
 #undef cAssociativity
+#undef cSymbol
+#undef cError
+#undef cOperator
+#undef cFunction
+#undef cNodes
+#undef cExpression
+#undef cParser
 
 #ifdef __cplusplus
 }
