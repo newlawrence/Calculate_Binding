@@ -5,12 +5,12 @@ cError calculate_get_error() {
     return Factory<Error, cError>::get();
 }
 
-int calculate_status(cError error) {
-    return static_cast<int>(reinterpret_cast<Error*>(error)->status);
+int calculate_status(cError err) {
+    return static_cast<int>(reinterpret_cast<Error*>(err)->status);
 }
 
-void calculate_message(cError error, char* message, size_t len) {
-    write(message, reinterpret_cast<Error*>(error)->message.c_str(), len);
+void calculate_message(cError err, char* message, size_t len) {
+    write(message, reinterpret_cast<Error*>(err)->message.c_str(), len);
 }
 
 

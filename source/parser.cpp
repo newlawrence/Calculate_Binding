@@ -10,17 +10,17 @@ cParser calculate_get_default_parser() {
 }
 
 
-double calculate_cast(cError error, cParser parser, const char* expr) {
+double calculate_cast(cError err, cParser parser, const char* expr) {
     return evaluate(
         [parser, expr]() {
             return reinterpret_cast<Parser*>(parser)->cast(expr);
         },
-        error
+        err
     );
 }
 
 void calculate_to_string(
-    cError error,
+    cError err,
     cParser parser,
     double val,
     char* expr,
@@ -32,13 +32,13 @@ void calculate_to_string(
         },
         expr,
         len,
-        error
+        err
     );
 }
 
 
 cExpression calculate_create_node(
-    cError error,
+    cError err,
     cParser parser,
     const char* token,
     cNodes nodes,
@@ -52,21 +52,21 @@ cExpression calculate_create_node(
                 from_string(vars)
             );
         },
-        error
+        err
     );
 }
 
-cExpression calculate_from_value(cError error, cParser parser, double val) {
+cExpression calculate_from_value(cError err, cParser parser, double val) {
     return Factory<Expression, cExpression>::create(
         [parser, val]() {
             return reinterpret_cast<Parser*>(parser)->create_node(val);
         },
-        error
+        err
     );
 }
 
 cExpression calculate_from_infix(
-    cError error,
+    cError err,
     cParser parser,
     const char* expr,
     const char* vars
@@ -76,12 +76,12 @@ cExpression calculate_from_infix(
             return reinterpret_cast<Parser*>(parser)->
                 from_infix(expr, from_string(vars));
         },
-        error
+        err
     );
 }
 
 cExpression calculate_from_postfix(
-    cError error,
+    cError err,
     cParser parser,
     const char* expr,
     const char* vars
@@ -91,12 +91,12 @@ cExpression calculate_from_postfix(
             return reinterpret_cast<Parser*>(parser)->
                 from_postfix(expr, from_string(vars));
         },
-        error
+        err
     );
 }
 
 cExpression calculate_parse(
-    cError error,
+    cError err,
     cParser parser,
     const char* expr
 ) {
@@ -104,13 +104,13 @@ cExpression calculate_parse(
         [parser, expr]() {
             return reinterpret_cast<Parser*>(parser)->parse(expr);
         },
-        error
+        err
     );
 }
 
 
 cExpression calculate_new_variables(
-    cError error,
+    cError err,
     cParser parser,
     cExpression expr,
     const char* vars
@@ -122,7 +122,7 @@ cExpression calculate_new_variables(
                 from_string(vars)
             );
         },
-        error
+        err
     );
 }
 
@@ -134,7 +134,7 @@ cExpression calculate_optimize(cParser parser, cExpression expr) {
 }
 
 cExpression calculate_replace(
-    cError error,
+    cError err,
     cParser parser,
     cExpression expr,
     size_t branch,
@@ -151,12 +151,12 @@ cExpression calculate_replace(
                     from_string(vars)
                 );
         },
-        error
+        err
     );
 }
 
 cExpression calculate_substitute(
-    cError error,
+    cError err,
     cParser parser,
     cExpression expr,
     const char* variable,
@@ -171,6 +171,6 @@ cExpression calculate_substitute(
                     val
                 );
         },
-        error
+        err
     );
 }

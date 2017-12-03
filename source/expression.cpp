@@ -15,10 +15,10 @@ size_t calculate_size(cNodes nodes) {
     return reinterpret_cast<Nodes*>(nodes)->size();
 }
 
-cExpression calculate_get_node(cError error, cNodes nodes, size_t n) {
+cExpression calculate_get_node(cError err, cNodes nodes, size_t n) {
     return Factory<Expression, cExpression>::create(
         [nodes, n]() { return reinterpret_cast<Nodes*>(nodes)->at(n); },
-        error
+        err
     );
 }
 
@@ -28,7 +28,7 @@ cNodes calculate_insert_node(cNodes nodes, cExpression expr) {
     return Factory<Nodes, cNodes>::get(extended);
 }
 
-cNodes calculate_remove_node(cError error, cNodes nodes, size_t n) {
+cNodes calculate_remove_node(cError err, cNodes nodes, size_t n) {
     using std::swap;
     Nodes trimmed{*reinterpret_cast<Nodes*>(nodes)};
     return Factory<Nodes, cNodes>::create(
@@ -37,7 +37,7 @@ cNodes calculate_remove_node(cError error, cNodes nodes, size_t n) {
             trimmed.pop_back();
             return trimmed;
         },
-        error
+        err
     );
 }
 
